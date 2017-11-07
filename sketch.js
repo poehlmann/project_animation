@@ -34,8 +34,8 @@ class Bubble{
     this.brightness=0;
   }
 
-  changeColor(color){
-    this.brightness = color;
+  changeColor(){
+    this.brightness = color(random(255),random(255),random(255));
   }
 
   contains(px,py){
@@ -51,7 +51,7 @@ class Bubble{
   show(){
     stroke(255);
     strokeWeight(4);
-    fill(this.brightness,125);
+    fill(this.brightness);
     ellipse(this.x,this.y,this.r *2);
   }
 }
@@ -73,12 +73,21 @@ function draw() {
     // bubbles.move();
     // bubbles.show();
     for(let i=0;i<bubbles.length;i++){
-      if(bubbles[i].contains(mouseX,mouseY)){
-        bubbles[i].changeColor(255);
-      }else{
-          bubbles[i].changeColor(0);
+      // if(bubbles[i].contains(mouseX,mouseY)){
+      //   bubbles[i].changeColor(255);
+      // }else{
+      //     bubbles[i].changeColor(0);
+      //}
+      //   console.log(bubbles[i].x);
+      for(let o = i+1 ; o <bubbles.length; o++){
+        let d = dist(bubbles[i].x,bubbles[i].y,bubbles[o].x,bubbles[o].y);
+        if(d < bubbles[i].r + bubbles[o].r){
+          // console.log(d );
+          bubbles[i].changeColor();
+          bubbles[o].changeColor();
+        }
       }
-      bubbles[i].move();
-      bubbles[i].show();
+        bubbles[i].move();
+        bubbles[i].show();
     }
 }
