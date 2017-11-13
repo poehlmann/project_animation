@@ -1,93 +1,47 @@
-// let circle = {
-//   x:0,
-//   y:100,
-//   diameter:50
-// };
-// let col = 0;
-// let tope = false;
-let bubbles =[];
+let video;
+let button;
+let snaps=[];
+let counter=0;
+let go=false;
+let total=40;
+function ready(){
+    go = true;
+}
 
 function setup() {
-  createCanvas(600,400);
-  for(let i=0;i<5;i++) {
-      let x = random(width);
-      let y = random(height);
-      let r = random(10, 50);
-      let b = new Bubble(x, y, r);
-      bubbles.push(b);
-  }
+  createCanvas(320,240);
+  background(51);
+  video = createCapture(VIDEO,ready);
+  video.size(320,240);
+  button = createButton("snap");
+  button.mousePressed(takesnap);
 }
 
-function mousePressed(){
-    for(let i=bubbles.length;i>=0;i--) {
-        if (bubbles[i].contains(mouseX, mouseY)) {
-            bubbles.splice(i,1);
-        }
-    }
-}
-
-class Bubble{
-  constructor(x,y,r){
-    this.x = x;
-    this.y = y;
-    this.r = r;
-    this.brightness=0;
-  }
-
-  changeColor(){
-    this.brightness = color(random(255),random(255),random(255));
-  }
-
-  contains(px,py){
-    let d = dist(px,py,this.x,this.y);
-    return d < this.r;
-  }
-
-  move(){
-    this.x = this.x + random(-5,5);
-    this.y = this.y + random(-5,5);
-  }
-
-  show(){
-    stroke(255);
-    strokeWeight(4);
-    fill(this.brightness);
-    ellipse(this.x,this.y,this.r *2);
-  }
+function takesnap(){
+    snaps.push(video.get());
+    image(video,0,0);
 }
 
 function draw() {
-  // col = map(circle.x , 0 , 600 , 0 , 255);
-  // background(col);
-  // fill(250,200,200);
-  //   ellipse(circle.x,circle.y,circle.diameter,circle.diameter);
-  //   if (circle.x===600)
-  //     tope=true;
-  //   else if (circle.x===0)
-  //     tope=false;
-  //   if(tope)
-  //       circle.x = circle.x - 1;
-  //   else
-  //       circle.x = circle.x +1;
-    background(0);
-    // bubbles.move();
-    // bubbles.show();
-    for(let i=0;i<bubbles.length;i++){
-      // if(bubbles[i].contains(mouseX,mouseY)){
-      //   bubbles[i].changeColor(255);
-      // }else{
-      //     bubbles[i].changeColor(0);
-      //}
-      //   console.log(bubbles[i].x);
-      for(let o = i+1 ; o <bubbles.length; o++){
-        let d = dist(bubbles[i].x,bubbles[i].y,bubbles[o].x,bubbles[o].y);
-        if(d < bubbles[i].r + bubbles[o].r){
-          // console.log(d );
-          bubbles[i].changeColor();
-          bubbles[o].changeColor();
+    if(go){
+        snaps[counter]=video.get();
+        counter++;
+        if(counter===total){
+            counter=0;
         }
-      }
-        bubbles[i].move();
-        bubbles[i].show();
+    }
+    let w=80;
+    let h=60;
+    let x=0;
+    let y=0;
+    for(let i=0 ; i < snaps.length ; i++){
+        let index = (i+frameCount)%snaps.length;
+        image(snaps[index],x,y,w,h);
+        x=x+w;
+        if(x>width){
+            x=0;
+            y=y+h;
+        }
+        console.log(snaps);
     }
 }
